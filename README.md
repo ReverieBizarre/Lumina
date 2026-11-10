@@ -77,5 +77,12 @@ cd Lumina
 
 ---
 
+## 贡献与致谢 / Contributors & Acknowledgments
+
+- **Author & Project Lead**: [@ReverieBizarre](https://github.com/ReverieBizarre)
+- **AI Pair Programming**: Developed in pair programming with **Google DeepMind Antigravity** & **Gemini** (assisted in macOS EDR display pipeline architecture, zero-overhead Swift implementation, and automated packaging).
+
+---
+
 ## License
 Distributed under the [MIT License](LICENSE).
