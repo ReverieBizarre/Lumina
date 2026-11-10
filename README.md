@@ -39,7 +39,7 @@
 
 ### Build from Source
 ```bash
-git clone https://github.com/your-username/Lumina.git
+git clone https://github.com/ReverieBizarre/Lumina.git
 cd Lumina
 ./scripts/build_dmg.sh
 ```
@@ -61,7 +61,7 @@ cd Lumina
 
 ### 本地编译
 ```bash
-git clone https://github.com/your-username/Lumina.git
+git clone https://github.com/ReverieBizarre/Lumina.git
 cd Lumina
 ./scripts/build_dmg.sh
 ```
