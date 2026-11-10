@@ -1,0 +1,12 @@
+# Build artifacts
+build/
+*.dmg
+*.o
+*.dSYM
+Lumina
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
