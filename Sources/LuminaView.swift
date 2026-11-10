@@ -1,5 +1,50 @@
 import SwiftUI
 
+struct LuminaSlider: View {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+
+    var body: some View {
+        GeometryReader { geometry in
+            let width = geometry.size.width
+            let percent = CGFloat((value - range.lowerBound) / (range.upperBound - range.lowerBound))
+            let knobX = min(max(percent * width, 9), width - 9)
+
+            ZStack(alignment: .leading) {
+                // Background Track
+                Capsule()
+                    .fill(Color.white.opacity(0.12))
+                    .frame(height: 6)
+
+                // Active Progress Track
+                Capsule()
+                    .fill(LinearGradient(colors: [.orange, .yellow], startPoint: .leading, endPoint: .trailing))
+                    .frame(width: max(knobX, 6), height: 6)
+
+                // Glowing Knob
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 18, height: 18)
+                    .shadow(color: .black.opacity(0.3), radius: 3, x: 0, y: 1)
+                    .overlay(Circle().stroke(Color.orange, lineWidth: 2))
+                    .offset(x: knobX - 9)
+            }
+            .frame(height: 20)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { gesture in
+                        let location = min(max(gesture.location.x, 0), width)
+                        let newPercent = Double(location / width)
+                        let newValue = range.lowerBound + newPercent * (range.upperBound - range.lowerBound)
+                        value = round(newValue)
+                    }
+            )
+        }
+        .frame(height: 20)
+    }
+}
+
 struct LuminaView: View {
     @ObservedObject var manager = BrightnessManager.shared
 
@@ -61,15 +106,14 @@ struct LuminaView: View {
             .background(Color(NSColor.controlBackgroundColor).opacity(0.6))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-            // Slider
+            // Custom Slider
             VStack(spacing: 6) {
                 HStack(spacing: 10) {
                     Image(systemName: "sun.min")
                         .font(.system(size: 12))
                         .foregroundStyle(.secondary)
 
-                    Slider(value: $manager.brightnessPercentage, in: 100...200, step: 1)
-                        .tint(.orange)
+                    LuminaSlider(value: $manager.brightnessPercentage, range: 100...200)
 
                     Image(systemName: "sun.max.fill")
                         .font(.system(size: 12))
@@ -109,9 +153,19 @@ struct LuminaView: View {
 
             // Settings & Quit
             HStack {
-                Toggle("开机启动", isOn: $manager.launchAtLogin)
-                    .toggleStyle(.checkbox)
-                    .font(.system(size: 12))
+                Button(action: {
+                    manager.launchAtLogin.toggle()
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: manager.launchAtLogin ? "checkmark.square.fill" : "square")
+                            .font(.system(size: 13))
+                            .foregroundStyle(manager.launchAtLogin ? Color.orange : Color.secondary)
+                        Text("开机启动")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.primary)
+                    }
+                }
+                .buttonStyle(.plain)
 
                 Spacer()
 
